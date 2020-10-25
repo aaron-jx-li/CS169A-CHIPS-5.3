@@ -7,13 +7,44 @@ class MoviesController < ApplicationController
   end
 
   def index
-    unless params[:ratings].nil?
+    @all_ratings = Movie.get_possible_values 
+    if params[:ratings].nil?
+      @ratings_to_show = session[:ratings]    
+    else
       @ratings_to_show = params[:ratings]
     end
-    @ratings_to_show = @all_ratings
-    @movies = Movie.with_ratings(params[:ratings])
+    
+    if params[:sorting].nil?
+      @sorting = session[:sorting]
+    else
+      @sorting = params[:sorting]
+    end
+    
+    @movies = Movie.all
+    if @ratings_to_show
+      @movies = Movie.with_ratings(@ratings_to_show.keys)
+    end
+    
+    if @ratings_to_show.nil?
+      @ratings_to_show = []
+    end
+    
+    if params[:sorting].nil? and params[:ratings].nil? and session[:ratings]
+      redirect_to movies_path({sorting: session[:sorting], ratings: session[:ratings]})
+    end
+    
+    if @sorting == 'title'
+      @movies = Movie.order_by_title(@ratings_to_show.keys)
+    elsif @sorting == 'release_date'
+      @movies = Movie.order_by_date(@ratings_to_show.keys)
+    else
+    end
+    
+    session[:ratings] = @ratings_to_show
+    session[:sorting] = @sorting
+    
   end
-
+  
   def new
     # default: render 'new' template
   end

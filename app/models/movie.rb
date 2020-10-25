@@ -4,6 +4,14 @@ class Movie < ActiveRecord::Base
   end
   
   def self.with_ratings(ratings)
-    return Movie.where("ratings.include? rating")
+    return Movie.where(rating: ratings)
+  end
+  
+  def self.order_by_title(ratings)
+    return self.with_ratings(ratings).order(:title)
+  end
+  
+  def self.order_by_date(ratings)
+    return self.with_ratings(ratings).order(:release_date)
   end
 end

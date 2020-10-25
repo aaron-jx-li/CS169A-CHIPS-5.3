@@ -26,7 +26,7 @@ class MoviesController < ApplicationController
     end
     
     if @ratings_to_show.nil?
-      @ratings_to_show = []
+      @ratings_to_show = {'G' => 1, 'PG' => 1, 'PG-13' => 1, 'R' => 1}
     end
     
     if params[:sorting].nil? and params[:ratings].nil? and session[:ratings]
